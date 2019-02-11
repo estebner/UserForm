@@ -1,0 +1,38 @@
+<div>New User</div>
+
+<form class="user-form">
+    <div class="name-input-field">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Name" value="name">
+      </mat-form-field>
+    </div>    
+
+    <div>
+        <mat-form-field class="role-input-field">
+            <mat-chip-list #chipList>
+              <mat-chip
+                *ngFor="let role of roles"
+                [selectable]="selectable"
+                [removable]="removable"
+                (removed)="remove(role)">
+                {{role.role}}
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+              </mat-chip>
+              <input
+                placeholder="Enter role..."
+                #roleInput
+                [formControl]="formCtrl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="addOnBlur"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let role of filteredRoles | async" [value]="role">
+                {{role.role}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>          
+    </div>
+</form>
