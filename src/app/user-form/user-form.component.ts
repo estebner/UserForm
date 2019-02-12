@@ -30,6 +30,7 @@ export class UserFormComponent implements OnInit {
   addOnBlur = true;
   isLoading = false;
   submitting = false;
+  submitted = false;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   roleFormCtrl = new FormControl('', []);
   nameFormCtrl = new FormControl('', [Validators.required]);
@@ -93,21 +94,22 @@ export class UserFormComponent implements OnInit {
       //don't allow multiple clicks
       if(this.submitting)
         return;
-
-      this.submitting = true;
+      this.submitted = true;
       if(this.user.name.length>0 && this.user.roles.length>0){
-          this.userService.addUser(this.user).pipe().subscribe(user => {
-              this.roles = [];
-              this.user = {name: '', roles: []};
-              this.resetForm(this.userForm);
-              this.submitting = false;
-          });
+      this.submitting = true;        
+        this.userService.addUser(this.user).pipe().subscribe(user => {
+            this.resetForm(this.userForm);
+            this.roles = [];
+            this.user = {name: '', roles: []};
+            this.submitting = false;
+        });
       }
     
   }
 
   resetForm(formGroup: FormGroup) {
     let control: AbstractControl = null;
+    this.submitted = false;
     formGroup.reset();
     formGroup.markAsUntouched();
     Object.keys(formGroup.controls).forEach((name) => {

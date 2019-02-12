@@ -1,5 +1,5 @@
 
-<form ngSubmit="submit()" [formGroup]="userForm" class="user-form">
+<form [formGroup]="userForm" class="user-form">
     <div class="form-header">New User</div>
 
     <div class="name-input-container">
@@ -7,7 +7,7 @@
         <input required [(ngModel)]="user.name" matInput placeholder="Name" name="Name"
           [formControl]="nameFormCtrl" >
       </mat-form-field>
-      <mat-error *ngIf="nameFormCtrl.hasError('required') && nameFormCtrl.touched">
+      <mat-error *ngIf="nameFormCtrl.hasError('required') && (nameFormCtrl.touched || submitted)">
           Name is required
       </mat-error>
     </div>    
@@ -40,7 +40,7 @@
             </mat-autocomplete>
 
           </mat-form-field>  
-          <mat-error *ngIf="roleFormCtrl.touched && roles.length == 0">
+          <mat-error *ngIf="(roleFormCtrl.touched || submitted) && roles.length == 0">
               Select at least one Role
           </mat-error>        
     </div>
