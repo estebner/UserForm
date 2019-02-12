@@ -1,3 +1,30 @@
 form {
+
     padding: 20px;
+    text-align: center;
+
+    div {
+        margin-bottom: 5px;
+        text-align: left;
+    }
+    mat-error{
+        font-size: 11px;
+    }
+}
+
+.mat-option{
+    height: 42px;
+    line-height: 42px;
+
+    span{
+        line-height: 42px;
+    }
+}
+
+.form-header {
+    font-size: 20px;
+}
+
+mat-form-field {
+    width: 300px;
 }
