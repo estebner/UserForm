@@ -1,16 +1,21 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, ElementRef, ViewChild} from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroupDirective, NgForm, Form, FormGroup, AbstractControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete}  from '@angular/material';
 import { Observable, pipe } from 'rxjs';
-import { switchMap, map, startWith, tap, debounceTime, finalize } from 'rxjs/operators';
+import { switchMap, map, startWith, tap, debounceTime } from 'rxjs/operators';
 import { RoleService } from '../role.service'
 import { UserService } from '../user.service'
 
-import { MatInputModule } from '@angular/material/input'; 
-
+import {ErrorStateMatcher} from '@angular/material/core';
 import { Role } from "./role";
 import { User } from "./user";
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    return (control && control.invalid && (control.dirty || control.touched));
+  }
+}
 
 @Component({
   selector: 'app-user-form',
@@ -24,21 +29,33 @@ export class UserFormComponent implements OnInit {
   removable = true;
   addOnBlur = true;
   isLoading = false;
+  submitting = false;
   separatorKeysCodes: number[] = [ENTER, COMMA];
-  formCtrl = new FormControl('', [Validators.required]);
+  roleFormCtrl = new FormControl('', []);
+  nameFormCtrl = new FormControl('', [Validators.required]);
+  chipFormCtrl = new FormControl('', [Validators.required]);
   filteredRoles: Observable<Role[]>;
   roles: Role[] = [];
+
+  userForm: FormGroup;
 
   userAdded: User = null;
 
   user: User = {name: '', roles: []};
 
+  matcher = new MyErrorStateMatcher();
 
   @ViewChild('roleInput') roleInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(private roleService: RoleService, private userService: UserService) {
-    this.filteredRoles = this.formCtrl.valueChanges.pipe(
+    this.userForm = new FormGroup({
+        role: this.roleFormCtrl,
+        name: this.nameFormCtrl,
+        chip: this.chipFormCtrl
+    })
+
+    this.filteredRoles = this.roleFormCtrl.valueChanges.pipe(
         debounceTime(300),
         tap(() => this.isLoading = true),
         startWith(null),
@@ -68,20 +85,35 @@ export class UserFormComponent implements OnInit {
   selected(event: MatAutocompleteSelectedEvent): void {
     this.roles.push(event.option.value);
     this.user.roles.push(event.option.value.id)
-    console.log(event);
     this.roleInput.nativeElement.value = '';
-    this.formCtrl.setValue(null);
+    this.roleFormCtrl.setValue(null);
   }
 
   submit(): void {
-      //if valid
+      //don't allow multiple clicks
+      if(this.submitting)
+        return;
+
+      this.submitting = true;
       if(this.user.name.length>0 && this.user.roles.length>0){
           this.userService.addUser(this.user).pipe().subscribe(user => {
-              this.user = {name: '', roles: []};
               this.roles = [];
+              this.user = {name: '', roles: []};
+              this.resetForm(this.userForm);
+              this.submitting = false;
           });
       }
     
+  }
+
+  resetForm(formGroup: FormGroup) {
+    let control: AbstractControl = null;
+    formGroup.reset();
+    formGroup.markAsUntouched();
+    Object.keys(formGroup.controls).forEach((name) => {
+      control = formGroup.controls[name];
+      control.setErrors(null);
+    });
   }
 
   ngOnInit(){

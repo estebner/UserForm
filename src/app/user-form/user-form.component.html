@@ -1,16 +1,21 @@
 
-<form class="user-form">
-    <h2>New User</h2>
+<form ngSubmit="submit()" [formGroup]="userForm" class="user-form">
+    <div class="form-header">New User</div>
 
-    <div class="name-input-field">
-      <mat-form-field required class="example-full-width">
-        <input [(ngModel)]="user.name" matInput placeholder="Name" name="Name">
+    <div class="name-input-container">
+      <mat-form-field class="example-full-width">
+        <input required [(ngModel)]="user.name" matInput placeholder="Name" name="Name"
+          [formControl]="nameFormCtrl" >
       </mat-form-field>
+      <mat-error *ngIf="nameFormCtrl.hasError('required') && nameFormCtrl.touched">
+          Name is required
+      </mat-error>
     </div>    
 
-    <div>
-        <mat-form-field class="role-input-field">
-            <mat-chip-list #chipList>
+    <div class="role-input-container">
+        <mat-form-field >
+            <mat-chip-list #chipList 
+            [formControl]="chipFormCtrl" required>
               <mat-chip
                 *ngFor="let role of roles"
                 [selectable]="selectable"
@@ -22,11 +27,10 @@
               <input
                 placeholder="Enter role..."
                 #roleInput
-                [formControl]="formCtrl"
+                [formControl]="roleFormCtrl"
                 [matAutocomplete]="auto"
                 [matChipInputFor]="chipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="addOnBlur"
                 (matChipInputTokenEnd)="add($event)">
             </mat-chip-list>
             <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
@@ -34,11 +38,15 @@
                 {{role.role}}
               </mat-option>
             </mat-autocomplete>
-          </mat-form-field>          
+
+          </mat-form-field>  
+          <mat-error *ngIf="roleFormCtrl.touched && roles.length == 0">
+              Select at least one Role
+          </mat-error>        
     </div>
 
     <div class="submitUserForm">
-        <button (click)="submit()" role="submit" mat-button>Submit</button>
+        <button mat-raised-button (click)="submit()" type="submit" mat-button>Submit</button>
     </div>
 
     <div *ngIf="userAdded">
