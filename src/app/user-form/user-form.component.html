@@ -17,7 +17,7 @@
                 [removable]="removable"
                 (removed)="remove(role)">
                 {{role.role}}
-                <mat-icon matChipRemove *ngIf="removable"></mat-icon>
+                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
               </mat-chip>
               <input
                 placeholder="Enter role..."
