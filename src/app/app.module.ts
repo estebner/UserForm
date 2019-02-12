@@ -9,10 +9,11 @@ import { HttpClientModule }    from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { UserFormComponent } from './user-form/user-form.component';
 
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule } from '@angular/material/input'; 
 import { MatChipsModule } from '@angular/material/chips';
-import { MatAutocompleteModule } from '@angular/material'
+import { MatAutocompleteModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button'; 
 
 import { MatIconModule, MatIcon } from '@angular/material/icon'; 
 
@@ -26,11 +27,13 @@ import { MatIconModule, MatIcon } from '@angular/material/icon';
     BrowserModule, 
     FormsModule, 
     ReactiveFormsModule, 
-    BrowserAnimationsModule, 
+    NoopAnimationsModule, 
     MatInputModule, 
     MatChipsModule, 
     MatIconModule,
-    MatAutocompleteModule
+    MatButtonModule,
+    MatAutocompleteModule,
+    HttpClientModule
   ],
   providers: [
     {provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}

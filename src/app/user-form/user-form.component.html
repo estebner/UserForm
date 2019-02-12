@@ -1,9 +1,10 @@
-<div>New User</div>
 
 <form class="user-form">
+    <h2>New User</h2>
+
     <div class="name-input-field">
-      <mat-form-field class="example-full-width">
-        <input matInput placeholder="Name" value="name">
+      <mat-form-field required class="example-full-width">
+        <input [(ngModel)]="user.name" matInput placeholder="Name" name="Name">
       </mat-form-field>
     </div>    
 
@@ -16,7 +17,7 @@
                 [removable]="removable"
                 (removed)="remove(role)">
                 {{role.role}}
-                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                <mat-icon matChipRemove *ngIf="removable"></mat-icon>
               </mat-chip>
               <input
                 placeholder="Enter role..."
@@ -34,5 +35,13 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>          
+    </div>
+
+    <div class="submitUserForm">
+        <button (click)="submit()" role="submit" mat-button>Submit</button>
+    </div>
+
+    <div *ngIf="userAdded">
+        New user {{userAdded.name}} submitted
     </div>
 </form>
